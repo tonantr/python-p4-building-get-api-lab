@@ -42,11 +42,13 @@ def bakery_by_id(id):
     if bakery is None:
         return jsonify({"error": "Bakery not found"}), 404
 
-    bakery_dict = {
-        "id": bakery.id,
-        "name": bakery.name,
-        "created_at": bakery.created_at,
-    }
+    # bakery_dict = {
+    #     "id": bakery.id,
+    #     "name": bakery.name,
+    #     "created_at": bakery.created_at,
+    # }
+
+    bakery_dict = bakery.to_dict()
 
     response = make_response(jsonify(bakery_dict), 200)
 
@@ -71,7 +73,7 @@ def baked_goods_by_price():
 @app.route("/baked_goods/most_expensive")
 def most_expensive_baked_good():
     highest_price = db.session.query(db.func.max(BakedGood.price)).scalar()
-    
+
     # highest_price_bakeries = BakedGood.query.filter(
     #     BakedGood.price == highest_price
     # ).all()
@@ -90,12 +92,14 @@ def most_expensive_baked_good():
         BakedGood.price == highest_price
     ).first()
 
-    results = {
-            "id": highest_price_bakery.id,
-            "name": highest_price_bakery.name,
-            "price": highest_price_bakery.price,
-            "created_at": highest_price_bakery.created_at
-    }
+    # results = {
+    #         "id": highest_price_bakery.id,
+    #         "name": highest_price_bakery.name,
+    #         "price": highest_price_bakery.price,
+    #         "created_at": highest_price_bakery.created_at
+    # }
+
+    results = highest_price_bakery.to_dict()
 
 
     response = make_response(jsonify(results), 200)
