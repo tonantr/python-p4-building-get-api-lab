@@ -22,25 +22,23 @@ def index():
 
 @app.route("/bakeries")
 def bakeries():
-    bakeries = []
-    for bakery in Bakery.query.all():
-        bakery_dict = {
-            "id": bakery.id,
-            "name": bakery.name,
-            "created_at": bakery.created_at,
-        }
-        bakeries.append(bakery_dict)
+    
+    bakeries = Bakery.query.all()
+    bakeries_serialized = [
+        bakery.to_dict() for bakery in bakeries
+    ]
 
-    response = make_response(bakeries, 200)
+    response = make_response(bakeries_serialized, 200)
     return response
 
 
 @app.route("/bakeries/<int:id>")
 def bakery_by_id(id):
     bakery = Bakery.query.filter(Bakery.id == id).first()
+    bakeries_serialized = bakery.to_dict()
 
-    if bakery is None:
-        return jsonify({"error": "Bakery not found"}), 404
+    # if bakery is None:
+    #     return jsonify({"error": "Bakery not found"}), 404
 
     # bakery_dict = {
     #     "id": bakery.id,
@@ -48,25 +46,17 @@ def bakery_by_id(id):
     #     "created_at": bakery.created_at,
     # }
 
-    bakery_dict = bakery.to_dict()
-
-    response = make_response(jsonify(bakery_dict), 200)
-
+    response = make_response(jsonify(bakeries_serialized), 200)
     return response
 
 
 @app.route("/baked_goods/by_price")
 def baked_goods_by_price():
-    baked_goods = []
-    for baked_good in BakedGood.query.all():
-        baked_goods_dict = {
-            "id": baked_good.id,
-            "name": baked_good.name,
-            "price": baked_good.price,
-            "created_at": baked_good.created_at,
-        }
-        baked_goods.append(baked_goods_dict)
-    response = make_response(baked_goods, 200)
+    baked_good_by_price = BakedGood.query.order_by(BakedGood.price).all()
+    baked_good_by_price_serialized = [
+        baked_good.to_dict() for baked_good in baked_good_by_price
+    ]
+    response = make_response(baked_good_by_price_serialized, 200)
     return response
 
 
@@ -99,10 +89,10 @@ def most_expensive_baked_good():
     #         "created_at": highest_price_bakery.created_at
     # }
 
-    results = highest_price_bakery.to_dict()
+    most_expensive_serialized = highest_price_bakery.to_dict()
 
 
-    response = make_response(jsonify(results), 200)
+    response = make_response(jsonify(most_expensive_serialized), 200)
     return response
 
 

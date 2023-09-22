@@ -12,25 +12,21 @@ class Bakery(db.Model, SerializerMixin):
     __tablename__ = 'bakeries'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
     
     baked_goods = db.relationship('BakedGood', back_populates='bakery')
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        }
+    def __repr__(self):
+        return f'<Bakery {self.name}>'
 
 
 class BakedGood(db.Model, SerializerMixin):
     __tablename__ = 'baked_goods'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     price = db.Column(db.Integer)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     updated_at = db.Column(db.DateTime, onupdate=db.func.now())
@@ -39,10 +35,6 @@ class BakedGood(db.Model, SerializerMixin):
     
     bakery = db.relationship('Bakery', back_populates='baked_goods')
 
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "name": self.name,
-            "price": self.price,
-            "created_at": self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        }
+    def __repr__(self):
+        return f'<Baked Good {self.name}, ${self.price}>'
+
